@@ -1,4 +1,4 @@
-# If you want to test this code, I recommend deleting the *60 in line 33 to test the timer in seconds not in minutes.
+# To test this code, I recommend deleting the *60 on line 33 to test the timer in seconds not in minutes.
 
 from tkinter import *
 import math
@@ -19,13 +19,14 @@ SESSIONS = [
 ]
 
 index = 0
-marks = ""
+marks = ""      # Indication of the amount of working sessions done.
 is_working = True
 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- #
 
 def start_timer():
+    start.config(state="disabled")    # To avoid multiple presses on start button.
     global is_working
     is_working = True
     for session in SESSIONS[index]:
@@ -39,7 +40,7 @@ def countdown(time):
         # Converting total time into minutes and seconds.
         time_min = math.floor(time / 60)
         if time_min < 10:
-            time_min = f"0{time_min}"
+            time_min = f"0{time_min}"       # So that it becomes 00:00.
         time_sec = time % 60
         if time_sec < 10:
             time_sec = f"0{time_sec}"
@@ -49,27 +50,30 @@ def countdown(time):
             canvas.itemconfig(timer_text, text=f"{time_min}:{time_sec}")
             window.after(1000, countdown, time-1)
 
-        else:                            # Shifting to the next session.
+        # Shifting to the next session when the previous one ends.
+        else:
             global index, marks
             if index < len(SESSIONS)-1:
                 index += 1
 
-                if index % 2 != 0:       # Marking accomplishing a work session.
+                # Marking accomplishing a work session.
+                if index % 2 != 0:
                     marks += "✔️"
                     check.config(text=marks)
-                start_timer()            # Starting the next session.
+                start_timer()                 # Starting the next session.
 
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
 def reset_action():
+    start.config(state="active")
     global is_working, index, marks
     is_working = False
     index = 0
     marks = ""
     canvas.itemconfig(timer_text, text="00:00")
     timer.config(text="Timer")
-    check.config(text="")
+    check.config(text=marks)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
